@@ -1,52 +1,52 @@
 package com.example.animalservice;
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/animals")
+@AllArgsConstructor
 public class AnimalController {
 
-    ArrayList<Animal> animals;
-    public AnimalController() {
-        animals = new ArrayList<>();
-        animals.add(new Animal("Lejon", "Kattis katt", null, null));
-        animals.add(new Animal("Struts", "Långis långis", null, null));
-    }
+    AnimalService animalService;
 
     @GetMapping
     public List<Animal> all() {
-        return animals;
+        return animalService.all()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/create")
     public Animal createAnimal(@RequestBody CreateAnimal createAnimal) {
-        Animal animal = new Animal(createAnimal.getName(), createAnimal.getBinomialName(), null, null);
-        animals.add(animal);
-        return animal;
+        return toDTO(animalService.add(createAnimal.getName(), createAnimal.getBinomialName()));
     }
 
     @GetMapping("/{id}")
     public Animal get(@PathVariable("id") String id) {
-        return animals.stream()
-                .filter(animal -> animal.getId().equals(id))
-                .findAny()
-                .orElse(null);
+        return toDTO(animalService.get(id));
     }
 
     @PutMapping("/{id}")
     public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
-        Animal animal = new Animal(updateAnimal.getName(), updateAnimal.getBinomialName(), null, null);
-        animals.removeIf(a -> a.getId().equals(id));
-        animals.add(animal);
-        return animal;
+        return toDTO(animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName()));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id) {
-        System.out.println("Nu är jag här med id " + id);
-        animals.removeIf(animal -> animal.getId().equals(id));
+        animalService.delete(id);
+    }
+
+    private Animal toDTO(AnimalEntity animalEntity) {
+        return new Animal(
+                animalEntity.getName(),
+                animalEntity.getBinomialName(),
+                animalEntity.getDescription(),
+                animalEntity.getConservationStatus()
+        );
     }
 }
