@@ -43,4 +43,10 @@ public class AnimalController {
         animals.add(animal);
         return animal;
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id) {
+        System.out.println("Nu är jag här med id " + id);
+        animals.removeIf(animal -> animal.getId().equals(id));
+    }
 }
