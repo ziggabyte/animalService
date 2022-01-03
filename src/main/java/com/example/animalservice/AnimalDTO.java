@@ -2,8 +2,6 @@ package com.example.animalservice;
 
 import lombok.Value;
 
-import java.util.UUID;
-
 @Value
 public class AnimalDTO {
     String id;
@@ -12,8 +10,8 @@ public class AnimalDTO {
     String description;
     String conservationStatus;
 
-    public AnimalDTO(String name, String binomialName, String description, String conservationStatus) {
-        this.id = UUID.randomUUID().toString();
+    public AnimalDTO(String id, String name, String binomialName, String description, String conservationStatus) {
+        this.id = id;
         this.name = name;
         this.binomialName = binomialName;
         this.description = description;

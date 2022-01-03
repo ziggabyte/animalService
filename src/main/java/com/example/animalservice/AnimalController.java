@@ -21,7 +21,7 @@ public class AnimalController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public AnimalDTO createAnimal(@RequestBody CreateAnimal createAnimal) {
         return toDTO(animalService.add(createAnimal.getName(), createAnimal.getBinomialName()));
     }
@@ -43,6 +43,7 @@ public class AnimalController {
 
     private AnimalDTO toDTO(AnimalEntity animalEntity) {
         return new AnimalDTO(
+                animalEntity.getId(),
                 animalEntity.getName(),
                 animalEntity.getBinomialName(),
                 animalEntity.getDescription(),
