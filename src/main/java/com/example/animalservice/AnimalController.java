@@ -35,4 +35,12 @@ public class AnimalController {
                 .findAny()
                 .orElse(null);
     }
+
+    @PutMapping("/{id}")
+    public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
+        Animal animal = new Animal(updateAnimal.getName(), updateAnimal.getBinomialName(), null, null);
+        animals.removeIf(a -> a.getId().equals(id));
+        animals.add(animal);
+        return animal;
+    }
 }
