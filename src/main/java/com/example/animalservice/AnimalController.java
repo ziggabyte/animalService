@@ -14,7 +14,7 @@ public class AnimalController {
     AnimalService animalService;
 
     @GetMapping
-    public List<Animal> all() {
+    public List<AnimalDTO> all() {
         return animalService.all()
                 .stream()
                 .map(this::toDTO)
@@ -22,17 +22,17 @@ public class AnimalController {
     }
 
     @PostMapping("/create")
-    public Animal createAnimal(@RequestBody CreateAnimal createAnimal) {
+    public AnimalDTO createAnimal(@RequestBody CreateAnimal createAnimal) {
         return toDTO(animalService.add(createAnimal.getName(), createAnimal.getBinomialName()));
     }
 
     @GetMapping("/{id}")
-    public Animal get(@PathVariable("id") String id) {
+    public AnimalDTO get(@PathVariable("id") String id) {
         return toDTO(animalService.get(id));
     }
 
     @PutMapping("/{id}")
-    public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
+    public AnimalDTO update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
         return toDTO(animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName()));
     }
 
@@ -41,8 +41,8 @@ public class AnimalController {
         animalService.delete(id);
     }
 
-    private Animal toDTO(AnimalEntity animalEntity) {
-        return new Animal(
+    private AnimalDTO toDTO(AnimalEntity animalEntity) {
+        return new AnimalDTO(
                 animalEntity.getName(),
                 animalEntity.getBinomialName(),
                 animalEntity.getDescription(),
