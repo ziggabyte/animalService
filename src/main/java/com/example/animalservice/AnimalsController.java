@@ -9,14 +9,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/animals")
 @AllArgsConstructor
-public class AnimalController {
+public class AnimalsController {
 
     AnimalService animalService;
 
     @GetMapping
     public List<AnimalDTO> all() {
         return animalService.all()
-                .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -27,23 +26,24 @@ public class AnimalController {
     }
 
     @GetMapping("/{id}")
-    public AnimalDTO get(@PathVariable("id") String id) {
-        return toDTO(animalService.get(id));
+    public AnimalDTO get(@PathVariable("id") String id) throws AnimalMissingException {
+        return toDTO(animalService.get(id).orElse(null));
     }
 
     @PutMapping("/{id}")
-    public AnimalDTO update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
+    public AnimalDTO update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal)
+            throws AnimalMissingException {
         return toDTO(animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName()));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) throws AnimalMissingException {
         animalService.delete(id);
     }
 
     private AnimalDTO toDTO(AnimalEntity animalEntity) {
         return new AnimalDTO(
-                animalEntity.getId(),
+                animalEntity.getId().toString(),
                 animalEntity.getName(),
                 animalEntity.getBinomialName(),
                 animalEntity.getDescription(),
